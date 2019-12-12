@@ -6,6 +6,7 @@ public class PokerRound {
     private Board board;
     private List<Hand> hands;
     private boolean isValid = true;
+    private String errorMessage;
 
     public Board getBoard() {
         return board;
@@ -29,5 +30,13 @@ public class PokerRound {
 
     public void setValid(boolean valid) {
         isValid = valid;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

@@ -6,14 +6,26 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
     private static final Logger log = LogManager.getRootLogger();
+    private static final Pattern REGEX = Pattern.compile("^([\\w]{10})[\\s]+([\\d])([\\s]+[\\w]{4})+$");
 
     public PokerRound parsePokerRound(String line) {
-
-        return null;
+        PokerRound pokerRound = new PokerRound();
+        Matcher matcher = REGEX.matcher(line);
+        if (matcher.matches()) {
+            log.info("String matches a pattern");
+            return null;
+        } else {
+            log.warn("String not matches a pattern");
+            pokerRound.setValid(false);
+            pokerRound.setErrorMessage("String not matches a pattern");
+            return pokerRound;
+        }
     }
 
     public List<Card> getCardsFromString(String cardsString) {
@@ -85,6 +97,7 @@ public class Parser {
             }
             cards.add(card);
         });
+        log.info("cards = " + cards);
         return cards;
     }
 }
