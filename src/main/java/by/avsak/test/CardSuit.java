@@ -1,5 +1,5 @@
 package by.avsak.test;
 
 public enum CardSuit {
-    Clubs, Diamonds, Hearts, Spades
+    Clubs, Diamonds, Hearts, Spades, UNKNOWN
 }

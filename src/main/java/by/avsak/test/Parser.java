@@ -19,6 +19,20 @@ public class Parser {
         Matcher matcher = REGEX.matcher(line);
         if (matcher.matches()) {
             log.info("String matches a pattern");
+            Board board = new Board(getCardsFromString(matcher.group(1)));
+            int handsNumber = Integer.parseInt(matcher.group(2));
+            List<Hand> hands = new ArrayList<>();
+
+            List<String> handListStr = Arrays.asList(line
+                    .replaceAll("[\\w]{10}[\\s]+[\\d]", "").trim() //delete board cards and number of hands
+                    .replaceAll("\\s+","") //delete WS
+                    .split("(?<=\\G.{4})")); //split line by 4 characters
+
+            handListStr.forEach(handStr -> {
+                Hand hand = new Hand(getCardsFromString(handStr));
+                hands.add(hand);
+            });
+
             return null;
         } else {
             log.warn("String not matches a pattern");
@@ -75,7 +89,7 @@ public class Parser {
                     card.setRank(CardRank.Ace);
                     break;
                 default:
-                    card = null;
+                    card.setRank(CardRank.UNKNOWN);
                     break;
             }
             switch (cardStr.substring(1, 2)) {
@@ -92,12 +106,17 @@ public class Parser {
                     card.setSuit(CardSuit.Spades);
                     break;
                 default:
-                    card = null;
+                    card.setSuit(CardSuit.UNKNOWN);
                     break;
             }
-            cards.add(card);
+            if (card.getRank().equals(CardRank.UNKNOWN) || card.getSuit().equals(CardSuit.UNKNOWN)) {
+                cards.add(null);
+            } else {
+                cards.add(card);
+            }
+
         });
-        log.info("cards = " + cards);
+        log.debug("cards = " + cards);
         return cards;
     }
 }
