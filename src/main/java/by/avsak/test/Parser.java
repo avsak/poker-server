@@ -87,5 +87,4 @@ public class Parser {
         });
         return cards;
     }
-    }
 }
