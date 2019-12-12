@@ -18,7 +18,7 @@ public class Parser {
         PokerRound pokerRound = new PokerRound();
         Matcher matcher = REGEX.matcher(line);
         if (matcher.matches()) {
-            log.info("String matches a pattern");
+            log.info("String matches a pattern.");
             Board board = new Board(getCardsFromString(matcher.group(1)));
             int handsNumber = Integer.parseInt(matcher.group(2));
             List<Hand> hands = new ArrayList<>();
@@ -30,14 +30,43 @@ public class Parser {
 
             handListStr.forEach(handStr -> {
                 Hand hand = new Hand(getCardsFromString(handStr));
-                hands.add(hand);
+                if (hand.getCards().contains(null)) {
+                    hands.add(null);
+                } else {
+                    hands.add(hand);
+                }
             });
 
-            return null;
+            System.out.println(hands);
+
+            if (board.getCards().contains(null)) {
+                int index = board.getCards().indexOf(null) + 1;
+                log.warn("Unknown board cards found! First unknown board card - " + index + ".");
+                pokerRound.setValid(false);
+                pokerRound.setErrorMessage("Unknown board cards found! First unknown board card - " + index + ".");
+                return pokerRound;
+            } else if (hands.contains(null)) {
+                int index = hands.indexOf(null) + 1;
+                log.warn("Unknown hand cards found! First unknown hand - " + index + ".");
+                pokerRound.setValid(false);
+                pokerRound.setErrorMessage("Unknown hand cards found! First unknown hand - " + index + ".");
+                return pokerRound;
+            } else if (hands.size() != handsNumber) {
+                log.warn(hands.size() + " hands found, but number of hands in the source - " + handsNumber + ". This is a problem.");
+                pokerRound.setValid(false);
+                pokerRound.setErrorMessage(hands.size() + " hands found, but number of hands in the source - " + handsNumber + ". This is a problem.");
+                return pokerRound;
+            } else {
+                log.info("pokerRound successfully created");
+                pokerRound.setBoard(board);
+                pokerRound.setHands(hands);
+                return pokerRound;
+            }
+
         } else {
-            log.warn("String not matches a pattern");
+            log.warn("String not matches a pattern!");
             pokerRound.setValid(false);
-            pokerRound.setErrorMessage("String not matches a pattern");
+            pokerRound.setErrorMessage("String not matches a pattern!");
             return pokerRound;
         }
     }
