@@ -19,11 +19,14 @@ public class PokerServer {
     public static void main(String[] args) throws IOException {
         log.info("Server is running");
         Parser parser = new Parser();
+        Validator validator = new Validator();
 
         List<String> fileLines = scanFile(INPUT_FILE_PATH);
         fileLines.forEach(line -> {
             counter++;
             PokerRound pokerRound = parser.parsePokerRound(line);
+
+            validator.checkCardsForDuplicates(pokerRound);
         });
     }
 
