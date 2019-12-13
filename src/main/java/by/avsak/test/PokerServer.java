@@ -28,6 +28,10 @@ public class PokerServer {
             if (pokerRound.isValid()) {
                 if (validator.checkCardsForDuplicates(pokerRound)) {
                     log.info("Duplicate cards not detected");
+                    Hand hand1 = pokerRound.getHands().get(0);
+                    hand1.detectCombination(pokerRound.getBoard());
+
+
                 } else {
                     log.warn("Duplicate cards detected!");
                 }
