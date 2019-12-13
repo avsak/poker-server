@@ -20,13 +20,21 @@ public class PokerServer {
         log.info("Server is running");
         Parser parser = new Parser();
         Validator validator = new Validator();
+        Combinator combinator = new Combinator();
 
         List<String> fileLines = scanFile(INPUT_FILE_PATH);
         fileLines.forEach(line -> {
             counter++;
             PokerRound pokerRound = parser.parsePokerRound(line);
-
-            validator.checkCardsForDuplicates(pokerRound);
+            if (pokerRound.isValid()) {
+                if (validator.checkCardsForDuplicates(pokerRound)) {
+                    log.info("Duplicate cards not detected");
+                } else {
+                    log.warn("Duplicate cards detected!");
+                }
+            } else {
+                log.warn("pokerRound not valid");
+            }
         });
     }
 
