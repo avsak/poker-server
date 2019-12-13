@@ -20,7 +20,6 @@ public class PokerServer {
         log.info("Server is running");
         Parser parser = new Parser();
         Validator validator = new Validator();
-        Combinator combinator = new Combinator();
 
         List<String> fileLines = scanFile(INPUT_FILE_PATH);
         fileLines.forEach(line -> {

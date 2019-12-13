@@ -2,7 +2,7 @@ package by.avsak.test;
 
 import java.util.Objects;
 
-public class Card {
+public class Card implements Comparable<Card>{
     private CardRank rank;
     private CardSuit suit;
 
@@ -42,5 +42,10 @@ public class Card {
     @Override
     public String toString() {
         return "Card[Rank: " + rank.toString() + ", Suit: " + suit.toString() + "]";
+    }
+
+    @Override
+    public int compareTo(Card card2) {
+        return Integer.compare(rank.getPower(), card2.rank.getPower());
     }
 }
