@@ -2,7 +2,6 @@ package by.avsak.test;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
@@ -83,43 +82,53 @@ public class Hand implements Comparable<Hand> {
         return Integer.compare(combinationType.getPower(), hand2.combinationType.getPower());
     }
 
-    public boolean detectStraightFlush(List<Card> cards) {
+    private boolean detectStraightFlush(List<Card> cards) {
         // TODO
         return false;
     }
 
-    public boolean detectFourOfKind(List<Card> cards) {
+    private boolean detectFourOfKind(List<Card> cards) {
         // TODO
         return false;
     }
 
-    public boolean detectFullHouse(List<Card> cards) {
+    private boolean detectFullHouse(List<Card> cards) {
         // TODO
         return false;
     }
 
-    public boolean detectFlush(List<Card> cards) {
+    private boolean detectFlush(List<Card> cards) {
         // TODO
         return false;
     }
 
-    public boolean detectStraight(List<Card> cards) {
-        // TODO
+    private boolean detectStraight(List<Card> cards) {
+        List<Integer> straight = new ArrayList<>(Arrays.asList(14, 13, 12, 11, 10));
+        Collections.sort(cards);
+        Collections.reverse(cards);  // A -> K -> Q -> ...
+        List <Integer> cardsRank = cards.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList());
+        while (straight.get(straight.size()-1) > 2) {
+            if (cardsRank.containsAll(straight)) {
+                return true;
+            } else {
+                straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
+            }
+        }
         return false;
     }
 
-    public boolean detectThreeOfKind(List<Card> cards) {
+    private boolean detectThreeOfKind(List<Card> cards) {
         Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
-        return cardRanksCount.containsValue(new Long(3));
+        return cardRanksCount.containsValue(3L);
     }
 
-    public boolean detectTwoPairs(List<Card> cards) {
+    private boolean detectTwoPairs(List<Card> cards) {
         Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
-        return Collections.frequency(new ArrayList<>(cardRanksCount.values()), new Long(2)) == 2;
+        return Collections.frequency(new ArrayList<>(cardRanksCount.values()), 2L) == 2;
     }
 
-    public boolean detectPair(List<Card> cards) {
+    private boolean detectPair(List<Card> cards) {
         Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
-        return cardRanksCount.containsValue(new Long(2));
+        return cardRanksCount.containsValue(2L);
     }
 }
