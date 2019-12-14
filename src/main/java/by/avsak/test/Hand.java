@@ -93,7 +93,8 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectFullHouse(List<Card> cards) {
-        return false;
+        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
+        return cardRanksCount.containsValue(3L) && cardRanksCount.containsValue(2L);
     }
 
     private boolean detectFlush(List<Card> cards) {
