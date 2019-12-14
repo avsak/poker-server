@@ -1,8 +1,7 @@
 package by.avsak.test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.counting;
@@ -110,15 +109,16 @@ public class Hand implements Comparable<Hand> {
     }
 
     public boolean detectThreeOfKind(List<Card> cards) {
-        // TODO
         return false;
     }
 
     public boolean detectTwoPairs(List<Card> cards) {
-        return false;
+        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
+        return Collections.frequency(new ArrayList<>(cardRanksCount.values()), new Long(2)) == 2;
     }
 
     public boolean detectPair(List<Card> cards) {
-        return cards.size() - cards.stream().map(Card::getRank).distinct().count() == 1;
+        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
+        return cardRanksCount.containsValue(new Long(2));
     }
 }
