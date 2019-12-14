@@ -109,7 +109,8 @@ public class Hand implements Comparable<Hand> {
     }
 
     public boolean detectThreeOfKind(List<Card> cards) {
-        return false;
+        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
+        return cardRanksCount.containsValue(new Long(3));
     }
 
     public boolean detectTwoPairs(List<Card> cards) {
