@@ -98,8 +98,9 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectFlush(List<Card> cards) {
-        // TODO
-        return false;
+        Map<CardSuit, Long> cardSuitsCount = cards.stream().collect(groupingBy(Card::getSuit, counting()));
+        System.out.println(cardSuitsCount);
+        return cardSuitsCount.containsValue(5L);
     }
 
     private boolean detectStraight(List<Card> cards) {
