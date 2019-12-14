@@ -3,8 +3,12 @@ package by.avsak.test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
-public class Hand implements Comparable<Hand>{
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
+public class Hand implements Comparable<Hand> {
     private List<Card> cards;
     private Card kicker;
     private CombinationType combinationType;
@@ -34,24 +38,45 @@ public class Hand implements Comparable<Hand>{
         return combinationType;
     }
 
-    public CombinationType detectCombination(Board board) {
+    public void detectCombination(Board board) {
         List<Card> allCards = new ArrayList<>();
         allCards.addAll(board.getCards());
         allCards.addAll(this.cards);
 
-        Collections.sort(allCards);
-        Collections.reverse(allCards);
-
-        if (detectStraightFlush(allCards)) return CombinationType.StraightFlush;
-        if (detectFourOfKind(allCards)) return CombinationType.FourOfKind;
-        if (detectFullHouse(allCards)) return CombinationType.FullHouse;
-        if (detectFlush(allCards)) return CombinationType.Flush;
-        if (detectStraight(allCards)) return CombinationType.Straight;
-        if (detectThreeOfKind(allCards)) return CombinationType.ThreeOfKind;
-        if (detectTwoPairs(allCards)) return CombinationType.TwoPairs;
-        if (detectPair(allCards)) return CombinationType.Pair;
-        if (detectHighCard(allCards)) return CombinationType.HighCard;
-        return CombinationType.UNKNOWN;
+        if (detectStraightFlush(allCards)) {
+            System.out.println("ЗАШЛИИИ");
+            this.combinationType = CombinationType.StraightFlush;
+            return;
+        }
+        if (detectFourOfKind(allCards)) {
+            this.combinationType = CombinationType.FourOfKind;
+            return;
+        }
+        if (detectFullHouse(allCards)) {
+            this.combinationType = CombinationType.FullHouse;
+            return;
+        }
+        if (detectFlush(allCards)) {
+            this.combinationType = CombinationType.Flush;
+            return;
+        }
+        if (detectStraight(allCards)) {
+            this.combinationType = CombinationType.Straight;
+            return;
+        }
+        if (detectThreeOfKind(allCards)) {
+            this.combinationType = CombinationType.ThreeOfKind;
+            return;
+        }
+        if (detectTwoPairs(allCards)) {
+            this.combinationType = CombinationType.TwoPairs;
+            return;
+        }
+        if (detectPair(allCards)) {
+            this.combinationType = CombinationType.Pair;
+        } else {
+            this.combinationType = CombinationType.HighCard;
+        }
     }
 
     @Override
@@ -59,39 +84,41 @@ public class Hand implements Comparable<Hand>{
         return Integer.compare(combinationType.getPower(), hand2.combinationType.getPower());
     }
 
-    public boolean detectStraightFlush(List<Card> sortedCards) {
+    public boolean detectStraightFlush(List<Card> cards) {
+        // TODO
         return false;
     }
 
-    public boolean detectFourOfKind(List<Card> sortedCards) {
+    public boolean detectFourOfKind(List<Card> cards) {
+        // TODO
         return false;
     }
 
-    public boolean detectFullHouse(List<Card> sortedCards) {
+    public boolean detectFullHouse(List<Card> cards) {
+        // TODO
         return false;
     }
 
-    public boolean detectFlush(List<Card> sortedCards) {
+    public boolean detectFlush(List<Card> cards) {
+        // TODO
         return false;
     }
 
-    public boolean detectStraight(List<Card> sortedCards) {
+    public boolean detectStraight(List<Card> cards) {
+        // TODO
         return false;
     }
 
-    public boolean detectThreeOfKind(List<Card> sortedCards) {
+    public boolean detectThreeOfKind(List<Card> cards) {
+        // TODO
         return false;
     }
 
-    public boolean detectTwoPairs(List<Card> sortedCards) {
+    public boolean detectTwoPairs(List<Card> cards) {
         return false;
     }
 
-    public boolean detectPair(List<Card> sortedCards) {
-        return false;
-    }
-
-    public boolean detectHighCard(List<Card> sortedCards) {
-        return false;
+    public boolean detectPair(List<Card> cards) {
+        return cards.size() - cards.stream().map(Card::getRank).distinct().count() == 1;
     }
 }

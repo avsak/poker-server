@@ -9,22 +9,18 @@ public enum CombinationType {
     ThreeOfKind(  4, "Three of a kind"),
     TwoPairs(     3, "Two pairs"),
     Pair(         2, "Pair"),
-    HighCard(     1, "High card"),
-    UNKNOWN(      0, "Unknown");
+    HighCard(     1, "High card");
 
     private int power;
     private String name;
 
     CombinationType(int power, String name) {
         this.power = power;
+        this.name = name;
     }
 
     public int getPower() {
         return power;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override

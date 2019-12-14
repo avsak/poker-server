@@ -31,6 +31,8 @@ public class PokerServer {
                     Hand hand1 = pokerRound.getHands().get(0);
                     hand1.detectCombination(pokerRound.getBoard());
 
+                    System.out.println("> type = " + hand1.getCombinationType());
+
 
                 } else {
                     log.warn("Duplicate cards detected!");
