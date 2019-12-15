@@ -42,7 +42,6 @@ public class Hand implements Comparable<Hand> {
         allCards.addAll(this.cards);
 
         if (detectStraightFlush(allCards)) {
-            System.out.println("ЗАШЛИИИ");
             this.combinationType = CombinationType.StraightFlush;
             return;
         }
@@ -83,7 +82,23 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectStraightFlush(List<Card> cards) {
-        // TODO
+        List<Integer> straight = new ArrayList<>(Arrays.asList(14, 13, 12, 11, 10));
+        Map<CardSuit, Long> cardSuitsCount = cards.stream().collect(groupingBy(Card::getSuit, counting()));
+        cardSuitsCount.forEach((s, c) -> {
+            if(c < 5L) {
+                cards.removeIf(card -> card.getSuit().equals(s));
+            }
+        });
+
+        Collections.sort(cards);
+        Collections.reverse(cards);  // A -> K -> Q -> ...
+        while (straight.get(straight.size()-1) > 2) {
+            if (cards.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList()).containsAll(straight)) {
+                return true;
+            } else {
+                straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
+            }
+        }
         return false;
     }
 
@@ -99,7 +114,6 @@ public class Hand implements Comparable<Hand> {
 
     private boolean detectFlush(List<Card> cards) {
         Map<CardSuit, Long> cardSuitsCount = cards.stream().collect(groupingBy(Card::getSuit, counting()));
-        System.out.println(cardSuitsCount);
         return cardSuitsCount.containsValue(5L);
     }
 
