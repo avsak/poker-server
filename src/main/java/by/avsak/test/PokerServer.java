@@ -40,12 +40,10 @@ public class PokerServer {
 
                     writeLineToFile(formattingPokerRoundResult(sortedHands));
                 } else {
-                    log.warn(pokerRound.getErrorMessage());
-                    writeLineToFile(pokerRound.getErrorMessage());
+                    writeLineToFile("Duplicate cards detected");
                 }
             } else {
-                log.warn(pokerRound.getErrorMessage());
-                writeLineToFile(pokerRound.getErrorMessage());
+                writeLineToFile(pokerRound.getErrorMessage() + "\n");
             }
         });
     }

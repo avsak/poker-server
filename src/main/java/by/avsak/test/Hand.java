@@ -36,7 +36,6 @@ public class Hand implements Comparable<Hand> {
             this.combinationType = CombinationType.StraightFlush;
             return;
         }
-        System.out.println("detectStraightFlush" + allCards);
         if (detectFourOfKind(allCards)) {
             this.combinationType = CombinationType.FourOfKind;
             return;
@@ -88,11 +87,7 @@ public class Hand implements Comparable<Hand> {
             return 1;
         } else if (comparisonHighCard < 0) {
             return -1;
-        } else if (comparisonSecondCard > 0) {
-            return 1;
-        } else if (comparisonSecondCard < 0) {
-            return -1;
-        } else return 0;
+        } else return Integer.compare(comparisonSecondCard, 0);
     }
 
     private boolean detectStraightFlush(List<Card> cards) {
