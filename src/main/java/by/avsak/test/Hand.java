@@ -8,7 +8,6 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class Hand implements Comparable<Hand> {
     private List<Card> cards;
-    private Card kicker;
     private CombinationType combinationType;
 
     public Hand(List<Card> cards) {
@@ -19,17 +18,9 @@ public class Hand implements Comparable<Hand> {
         return cards;
     }
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
-
     @Override
     public String toString() {
         return "Hand[Cards: " + cards;
-    }
-
-    public Card getKicker() {
-        return kicker;
     }
 
     public CombinationType getCombinationType() {
@@ -45,6 +36,7 @@ public class Hand implements Comparable<Hand> {
             this.combinationType = CombinationType.StraightFlush;
             return;
         }
+        System.out.println("detectStraightFlush" + allCards);
         if (detectFourOfKind(allCards)) {
             this.combinationType = CombinationType.FourOfKind;
             return;
@@ -78,24 +70,50 @@ public class Hand implements Comparable<Hand> {
 
     @Override
     public int compareTo(Hand hand2) {
-        return Integer.compare(combinationType.getPower(), hand2.combinationType.getPower());
+        Collections.sort(cards);
+        Collections.reverse(cards);
+        List<Card> hand2Cards = hand2.getCards();
+        Collections.sort(hand2Cards);
+        Collections.reverse(hand2Cards);
+
+        int comparisonCombinationType = Integer.compare(combinationType.getPower(), hand2.combinationType.getPower());
+        int comparisonHighCard = cards.get(0).compareTo(hand2Cards.get(0));
+        int comparisonSecondCard = cards.get(1).compareTo(hand2Cards.get(1));
+
+        if (comparisonCombinationType > 0) {
+            return 1;
+        } else if (comparisonCombinationType < 0) {
+            return -1;
+        } else if (comparisonHighCard > 0) {
+            return 1;
+        } else if (comparisonHighCard < 0) {
+            return -1;
+        } else if (comparisonSecondCard > 0) {
+            return 1;
+        } else if (comparisonSecondCard < 0) {
+            return -1;
+        } else return 0;
     }
 
     private boolean detectStraightFlush(List<Card> cards) {
+        List<Card> c1 = new ArrayList<>(cards);
         List<Integer> straight = new ArrayList<>(Arrays.asList(14, 13, 12, 11, 10));
-        Map<CardSuit, Long> cardSuitsCount = cards.stream().collect(groupingBy(Card::getSuit, counting()));
+        Map<CardSuit, Long> cardSuitsCount = c1.stream().collect(groupingBy(Card::getSuit, counting()));
         cardSuitsCount.forEach((s, c) -> {
-            if(c < 5L) {
-                cards.removeIf(card -> card.getSuit().equals(s));
+            if (c < 5L) {
+                c1.removeIf(card -> card.getSuit().equals(s));
             }
         });
 
-        Collections.sort(cards);
-        Collections.reverse(cards);  // A -> K -> Q -> ...
-        while (straight.get(straight.size()-1) > 2) {
-            if (cards.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList()).containsAll(straight)) {
+        Collections.sort(c1);
+        Collections.reverse(c1);  // A -> K -> Q -> ...
+        while (straight.get(straight.size() - 1) > 2) {
+            if (c1.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList()).containsAll(straight)) {
                 return true;
-            } else {
+            } else if (c1.size() < 5) {
+                return false;
+            }
+            else {
                 straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
             }
         }
@@ -121,8 +139,8 @@ public class Hand implements Comparable<Hand> {
         List<Integer> straight = new ArrayList<>(Arrays.asList(14, 13, 12, 11, 10));
         Collections.sort(cards);
         Collections.reverse(cards);  // A -> K -> Q -> ...
-        List <Integer> cardsRank = cards.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList());
-        while (straight.get(straight.size()-1) > 2) {
+        List<Integer> cardsRank = cards.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList());
+        while (straight.get(straight.size() - 1) > 2) {
             if (cardsRank.containsAll(straight)) {
                 return true;
             } else {
@@ -143,6 +161,7 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectPair(List<Card> cards) {
+        System.out.println(cards);
         Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
         return cardRanksCount.containsValue(2L);
     }

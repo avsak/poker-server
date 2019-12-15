@@ -7,33 +7,38 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 
 public class PokerServer {
 
     private static final Logger log = LogManager.getRootLogger();
     private static final String INPUT_FILE_PATH = "./src/main/resources/input.txt";
-    private static int counter = 0;
+    private static final String OUTPUT_FILE_PATH = "./src/main/resources/output.txt";
 
     public static void main(String[] args) throws IOException {
         log.info("Server is running");
         Parser parser = new Parser();
         Validator validator = new Validator();
 
-        List<String> fileLines = scanFile(INPUT_FILE_PATH);
+        if (Files.exists(Paths.get(OUTPUT_FILE_PATH))) Files.delete(Paths.get(OUTPUT_FILE_PATH));
+        Files.createFile(Paths.get(OUTPUT_FILE_PATH));
+
+        List<String> fileLines = readFile();
         fileLines.forEach(line -> {
-            counter++;
             PokerRound pokerRound = parser.parsePokerRound(line);
             if (pokerRound.isValid()) {
                 if (validator.checkCardsForDuplicates(pokerRound)) {
                     log.info("Duplicate cards not detected");
-                    Hand hand1 = pokerRound.getHands().get(0);
-                    hand1.detectCombination(pokerRound.getBoard());
 
-                    System.out.println("> type = " + hand1.getCombinationType());
+                    pokerRound.getHands().forEach(hand ->
+                            hand.detectCombination(pokerRound.getBoard()));
 
+                    List<Hand> sortedHands = pokerRound.getHands();
+                    Collections.sort(sortedHands);
+                    Collections.reverse(sortedHands);
 
+                    writeLineToFile(formattingPokerRoundResult(sortedHands));
                 } else {
                     log.warn("Duplicate cards detected!");
                 }
@@ -43,10 +48,51 @@ public class PokerServer {
         });
     }
 
-    private static List<String> scanFile(String inputFilePath) throws IOException {
+    private static List<String> readFile() throws IOException {
         List<String> fileLines = new ArrayList<>();
-        Files.lines(Paths.get(inputFilePath), StandardCharsets.UTF_8).forEach(line -> fileLines.add(line.trim()));
+        Files.lines(Paths.get(PokerServer.INPUT_FILE_PATH), StandardCharsets.UTF_8).forEach(line -> fileLines.add(line.trim()));
         log.info("File read successfully");
         return fileLines;
+    }
+
+
+    private static String formattingPokerRoundResult(List<Hand> sortedHands) {
+        String result = "";
+
+        ListIterator<Hand> listIterator = sortedHands.listIterator();
+
+        System.out.println();
+        System.out.println(sortedHands);
+        System.out.println();
+        while(listIterator.hasNext()) {
+            Hand currentHand = listIterator.next();
+            Hand previousHand = listIterator.previousIndex() == 0 ? null : sortedHands.get(listIterator.previousIndex() - 1);
+
+            if (previousHand == null) {
+                result = result + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
+                                + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit()
+                                + "(" + currentHand.getCombinationType() + ")";
+            } else if (currentHand.compareTo(previousHand) == 0) {
+                result = result + " = " + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
+                                        + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit()
+                                        + "(" + currentHand.getCombinationType() + ")";
+            } else {
+                result = result + " " + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
+                                      + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit()
+                                      + "(" + currentHand.getCombinationType() + ")";
+            }
+        }
+
+        System.out.println(result);
+
+        return result + "\n";
+    }
+
+    private static void writeLineToFile(String line) {
+        try {
+            Files.write(Paths.get(OUTPUT_FILE_PATH), line.trim().getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            log.warn(e);
+        }
     }
 }
