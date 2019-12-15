@@ -91,26 +91,22 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectStraightFlush(List<Card> cards) {
-        List<Card> c1 = new ArrayList<>(cards);
+        List<Card> cardList = new ArrayList<>(cards);
         List<Integer> straight = new ArrayList<>(Arrays.asList(14, 13, 12, 11, 10));
-        Map<CardSuit, Long> cardSuitsCount = c1.stream().collect(groupingBy(Card::getSuit, counting()));
+        Map<CardSuit, Long> cardSuitsCount = cardList.stream().collect(groupingBy(Card::getSuit, counting()));
         cardSuitsCount.forEach((s, c) -> {
             if (c < 5L) {
-                c1.removeIf(card -> card.getSuit().equals(s));
+                cardList.removeIf(card -> card.getSuit().equals(s));
             }
         });
+        if (cardList.size() < 5) return false;
 
-        Collections.sort(c1);
-        Collections.reverse(c1);  // A -> K -> Q -> ...
+        Collections.sort(cardList);
+        Collections.reverse(cardList);  // A -> K -> Q -> ...
         while (straight.get(straight.size() - 1) > 2) {
-            if (c1.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList()).containsAll(straight)) {
+            if (cardList.stream().map(card -> card.getRank().getPower()).collect(Collectors.toList()).containsAll(straight)) {
                 return true;
-            } else if (c1.size() < 5) {
-                return false;
-            }
-            else {
-                straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
-            }
+            } else straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
         }
         return false;
     }
@@ -138,9 +134,7 @@ public class Hand implements Comparable<Hand> {
         while (straight.get(straight.size() - 1) > 2) {
             if (cardsRank.containsAll(straight)) {
                 return true;
-            } else {
-                straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
-            }
+            } else straight = straight.stream().map(cardRank -> cardRank - 1).collect(Collectors.toList());
         }
         return false;
     }
@@ -156,7 +150,6 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectPair(List<Card> cards) {
-        System.out.println(cards);
         Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
         return cardRanksCount.containsValue(2L);
     }

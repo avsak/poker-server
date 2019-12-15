@@ -40,7 +40,7 @@ public class PokerServer {
 
                     writeLineToFile(formattingPokerRoundResult(sortedHands));
                 } else {
-                    writeLineToFile("Duplicate cards detected");
+                    writeLineToFile("Duplicate cards detected\n");
                 }
             } else {
                 writeLineToFile(pokerRound.getErrorMessage() + "\n");
@@ -78,8 +78,6 @@ public class PokerServer {
                                       + "(" + currentHand.getCombinationType() + ")";
             }
         }
-
-        System.out.println(result);
         return result + "\n";
     }
 

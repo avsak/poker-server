@@ -5,3 +5,4 @@ Unknown hand cards found! First unknown hand - 2.
 Unknown board cards found! First unknown board card - 2.
 4 hands found, but number of hands in the source - 6. This is a problem.
 Duplicate cards detected
+AcAs(Straight flush !!!) KdKh(Three of a kind) Kc3d(Two pairs)

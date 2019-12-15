@@ -1,7 +1,7 @@
 package by.avsak.test;
 
 public enum CombinationType {
-    StraightFlush(9, "Straight flush"),
+    StraightFlush(9, "Straight flush !!!"),
     FourOfKind(   8, "Four of a kind"),
     FullHouse(    7, "Full house"),
     Flush(        6, "Flush"),
