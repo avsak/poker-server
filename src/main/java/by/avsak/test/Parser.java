@@ -37,8 +37,6 @@ public class Parser {
                 }
             });
 
-            System.out.println(hands);
-
             if (board.getCards().contains(null)) {
                 int index = board.getCards().indexOf(null) + 1;
                 log.warn("Unknown board cards found! First unknown board card - " + index + ".");

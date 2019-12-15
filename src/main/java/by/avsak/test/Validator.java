@@ -11,7 +11,6 @@ public class Validator {
         allCards.addAll(pokerRound.getBoard().getCards());
         pokerRound.getHands().forEach(hand -> allCards.addAll(hand.getCards()));
         Stream stream = allCards.stream();
-
         return stream.distinct().count() == allCards.size();
     }
 }

@@ -40,10 +40,12 @@ public class PokerServer {
 
                     writeLineToFile(formattingPokerRoundResult(sortedHands));
                 } else {
-                    log.warn("Duplicate cards detected!");
+                    log.warn(pokerRound.getErrorMessage());
+                    writeLineToFile(pokerRound.getErrorMessage());
                 }
             } else {
-                log.warn("pokerRound not valid");
+                log.warn(pokerRound.getErrorMessage());
+                writeLineToFile(pokerRound.getErrorMessage());
             }
         });
     }
@@ -58,12 +60,8 @@ public class PokerServer {
 
     private static String formattingPokerRoundResult(List<Hand> sortedHands) {
         String result = "";
-
         ListIterator<Hand> listIterator = sortedHands.listIterator();
 
-        System.out.println();
-        System.out.println(sortedHands);
-        System.out.println();
         while(listIterator.hasNext()) {
             Hand currentHand = listIterator.next();
             Hand previousHand = listIterator.previousIndex() == 0 ? null : sortedHands.get(listIterator.previousIndex() - 1);
@@ -84,13 +82,12 @@ public class PokerServer {
         }
 
         System.out.println(result);
-
         return result + "\n";
     }
 
     private static void writeLineToFile(String line) {
         try {
-            Files.write(Paths.get(OUTPUT_FILE_PATH), line.trim().getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(OUTPUT_FILE_PATH), line.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             log.warn(e);
         }

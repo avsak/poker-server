@@ -13,10 +13,6 @@ public class Board {
         return cards;
     }
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
-    }
-
     @Override
     public String toString() {
         return "Board[Cards=" + cards + "]";
