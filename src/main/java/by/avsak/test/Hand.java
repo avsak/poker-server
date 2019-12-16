@@ -27,6 +27,10 @@ public class Hand implements Comparable<Hand> {
         return combinationType;
     }
 
+    public void setCombinationType(CombinationType combinationType) {
+        this.combinationType = combinationType;
+    }
+
     public void detectCombination(Board board) {
         List<Card> allCards = new ArrayList<>();
         allCards.addAll(board.getCards());
