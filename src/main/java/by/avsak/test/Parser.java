@@ -21,8 +21,8 @@ public class Parser {
             log.info("String matches a pattern.");
             Board board = new Board(getCardsFromString(matcher.group(1)));
             int handsNumber = Integer.parseInt(matcher.group(2));
-            List<Hand> hands = new ArrayList<>();
 
+            List<Hand> hands = new ArrayList<>();
             List<String> handListStr = Arrays.asList(line
                     .replaceAll("[\\w]{10}[\\s]+[\\d]", "").trim() //delete board cards and number of hands
                     .replaceAll("\\s+","") //delete WS
@@ -39,20 +39,20 @@ public class Parser {
 
             if (board.getCards().contains(null)) {
                 int index = board.getCards().indexOf(null) + 1;
-                log.warn("Unknown board cards found! First unknown board card - " + index + ".");
                 pokerRound.setValid(false);
                 pokerRound.setErrorMessage("Unknown board cards found! First unknown board card - " + index + ".");
+                log.warn(pokerRound.getErrorMessage());
                 return pokerRound;
             } else if (hands.contains(null)) {
                 int index = hands.indexOf(null) + 1;
-                log.warn("Unknown hand cards found! First unknown hand - " + index + ".");
                 pokerRound.setValid(false);
                 pokerRound.setErrorMessage("Unknown hand cards found! First unknown hand - " + index + ".");
+                log.warn(pokerRound.getErrorMessage());
                 return pokerRound;
             } else if (hands.size() != handsNumber) {
-                log.warn(hands.size() + " hands found, but number of hands in the source - " + handsNumber + ". This is a problem.");
                 pokerRound.setValid(false);
                 pokerRound.setErrorMessage(hands.size() + " hands found, but number of hands in the source - " + handsNumber + ". This is a problem.");
+                log.warn(pokerRound.getErrorMessage());
                 return pokerRound;
             } else {
                 log.info("pokerRound successfully created");
@@ -62,9 +62,9 @@ public class Parser {
             }
 
         } else {
-            log.warn("String not matches a pattern!");
             pokerRound.setValid(false);
             pokerRound.setErrorMessage("String not matches a pattern!");
+            log.warn(pokerRound.getErrorMessage());
             return pokerRound;
         }
     }
