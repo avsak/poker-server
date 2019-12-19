@@ -34,7 +34,6 @@ public class PokerServer {
 
                     List<Hand> sortedHands = pokerRound.getHands();
                     Collections.sort(sortedHands);
-                    Collections.reverse(sortedHands);
 
                     System.out.println(formattingPokerRoundResult(sortedHands));
                 } else {
@@ -64,16 +63,13 @@ public class PokerServer {
 
             if (previousHand == null) {
                 result = result + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
-                                + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit()
-                                + "(" + currentHand.getCombinationType() + ")";
+                                + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit();
             } else if (currentHand.compareTo(previousHand) == 0) {
-                result = result + " = " + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
-                                        + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit()
-                                        + "(" + currentHand.getCombinationType() + ")";
+                result = result + "=" + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
+                                        + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit();
             } else {
                 result = result + " " + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
-                                      + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit()
-                                      + "(" + currentHand.getCombinationType() + ")";
+                                      + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit();
             }
         }
         return result + "\n";
