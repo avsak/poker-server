@@ -34,10 +34,10 @@ public class PokerServer {
                     Collections.sort(sortedHands); // ascending
                     System.out.println(formattingPokerRoundResult(sortedHands));
                 } else {
-                    System.out.println(pokerRound.getErrorMessage());
+                    System.out.println(pokerRound.getErrorMessage() + "\n");
                 }
             } else {
-                System.out.println(pokerRound.getErrorMessage());
+                System.out.println(pokerRound.getErrorMessage() + "\n");
             }
         }
         br.close();
@@ -62,6 +62,6 @@ public class PokerServer {
                         + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit();
             }
         }
-        return result;
+        return result + "\n";
     }
 }
