@@ -7,22 +7,20 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 
 public class PokerServer {
 
     private static final Logger log = LogManager.getRootLogger();
     private static final String INPUT_FILE_PATH = "./src/main/resources/input.txt";
-    private static final String OUTPUT_FILE_PATH = "./src/main/resources/output.txt";
 
     public static void main(String[] args) throws IOException {
         log.info("Server is running");
         Parser parser = new Parser();
         Validator validator = new Validator();
-
-        if (Files.exists(Paths.get(OUTPUT_FILE_PATH))) Files.delete(Paths.get(OUTPUT_FILE_PATH));
-        Files.createFile(Paths.get(OUTPUT_FILE_PATH));
 
         List<String> fileLines = readFile();
         fileLines.forEach(line -> {
@@ -38,12 +36,12 @@ public class PokerServer {
                     Collections.sort(sortedHands);
                     Collections.reverse(sortedHands);
 
-                    writeLineToFile(formattingPokerRoundResult(sortedHands));
+                    System.out.println(formattingPokerRoundResult(sortedHands));
                 } else {
-                    writeLineToFile("Duplicate cards detected\n");
+                    System.out.println("Duplicate cards detected\n");
                 }
             } else {
-                writeLineToFile(pokerRound.getErrorMessage() + "\n");
+                System.out.println(pokerRound.getErrorMessage() + "\n");
             }
         });
     }
@@ -79,13 +77,5 @@ public class PokerServer {
             }
         }
         return result + "\n";
-    }
-
-    private static void writeLineToFile(String line) {
-        try {
-            Files.write(Paths.get(OUTPUT_FILE_PATH), line.getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            log.warn(e);
-        }
     }
 }
