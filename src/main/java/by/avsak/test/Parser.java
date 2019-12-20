@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-    private static final Logger log = LogManager.getRootLogger();
-    private static final Pattern REGEX = Pattern.compile("^([\\w]{10})[\\s]+([\\d])([\\s]+[\\w]{4})+$");
+    private static Logger log = LogManager.getRootLogger();
+    private static final Pattern REGEX = Pattern.compile("^([\\w]{10})([\\s]+[\\w]{4})+$");
 
     public PokerRound parsePokerRound(String line) {
         PokerRound pokerRound = new PokerRound();
@@ -20,11 +20,10 @@ public class Parser {
         if (matcher.matches()) {
             log.info("String matches a pattern.");
             Board board = new Board(getCardsFromString(matcher.group(1)));
-            int handsNumber = Integer.parseInt(matcher.group(2));
 
             List<Hand> hands = new ArrayList<>();
             List<String> handListStr = Arrays.asList(line
-                    .replaceAll("[\\w]{10}[\\s]+[\\d]", "").trim() //delete board cards and number of hands
+                    .replaceAll("[\\w]{10}[\\s]+", "").trim() //delete board cards
                     .replaceAll("\\s+","") //delete WS
                     .split("(?<=\\G.{4})")); //split line by 4 characters
 
@@ -47,11 +46,6 @@ public class Parser {
                 int index = hands.indexOf(null) + 1;
                 pokerRound.setValid(false);
                 pokerRound.setErrorMessage("Unknown hand cards found! First unknown hand - " + index + ".");
-                log.warn(pokerRound.getErrorMessage());
-                return pokerRound;
-            } else if (hands.size() != handsNumber) {
-                pokerRound.setValid(false);
-                pokerRound.setErrorMessage(hands.size() + " hands found, but number of hands in the source - " + handsNumber + ". This is a problem.");
                 log.warn(pokerRound.getErrorMessage());
                 return pokerRound;
             } else {
