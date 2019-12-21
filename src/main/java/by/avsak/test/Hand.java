@@ -60,15 +60,10 @@ public class Hand implements Comparable<Hand> {
             this.combinationType = CombinationType.ThreeOfKind;
             return;
         }
-        if (detectTwoPairs(allCards)) {
-            this.combinationType = CombinationType.TwoPairs;
-            return;
-        }
-        if (detectPair(allCards)) {
-            this.combinationType = CombinationType.Pair;
-        } else {
-            this.combinationType = CombinationType.HighCard;
-        }
+        if (detectTwoPairs(allCards)) return;
+        if (detectPair(allCards)) return;
+
+        this.combinationType = CombinationType.HighCard;
     }
 
     @Override
@@ -126,8 +121,28 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectFlush(List<Card> cards) {
-        Map<CardSuit, Long> cardSuitsCount = cards.stream().collect(groupingBy(Card::getSuit, counting()));
-        return cardSuitsCount.containsValue(5L);
+        Map<CardSuit, Long> suitsCount = cards.stream()
+                .collect(groupingBy(Card::getSuit, counting()));
+
+        if (suitsCount.containsValue(5L) || suitsCount.containsValue(6L) || suitsCount.containsValue(7L)) {
+            List<Card> cardCombinations = new ArrayList<>();
+            CardSuit flushCardSuit = suitsCount.entrySet().stream()
+                    .filter(rc -> rc.getValue() >= 5L)
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+
+            cards.stream()
+                    .filter(card -> card.getSuit() == flushCardSuit)
+                    .sorted(Comparator.reverseOrder())
+                    .limit(5)
+                    .forEach(cardCombinations::add);
+
+            this.combinationType = CombinationType.Flush;
+            this.combinationType.setCardCombinations(cardCombinations);
+            return true;
+        }
+        return false;
     }
 
     private boolean detectStraight(List<Card> cards) {
@@ -144,17 +159,78 @@ public class Hand implements Comparable<Hand> {
     }
 
     private boolean detectThreeOfKind(List<Card> cards) {
-        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
-        return cardRanksCount.containsValue(3L);
+        Map<CardRank, Long> ranksCount = cards.stream()
+                .collect(groupingBy(Card::getRank, counting()));
+
+        if (ranksCount.containsValue(3L)) {
+            List<Card> cardCombinations = new ArrayList<>();
+
+            CardRank threeCardRank = ranksCount.entrySet().stream()
+                    .filter(rc -> rc.getValue() == 3L)
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+
+            cards.stream()
+                    .filter(card -> card.getRank() == threeCardRank)
+                    .forEach(cardCombinations::add);
+
+            this.combinationType = CombinationType.ThreeOfKind;
+            this.combinationType.setCardCombinations(cardCombinations);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean detectTwoPairs(List<Card> cards) {
-        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
-        return Collections.frequency(new ArrayList<>(cardRanksCount.values()), 2L) == 2;
+        Map<CardRank, Long> ranksCount = cards.stream()
+                .collect(groupingBy(Card::getRank, counting()));
+
+        if (Collections.frequency(new ArrayList<>(ranksCount.values()), 2L) == 2) {
+            List<Card> cardCombinations = new ArrayList<>();
+
+            List<CardRank> pairedCardRanks = ranksCount.entrySet().stream()
+                    .filter(rc -> rc.getValue() == 2L)
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
+            pairedCardRanks.forEach(pairCardRank ->
+                    cards.stream()
+                            .filter(card -> card.getRank() == pairCardRank)
+                            .forEach(cardCombinations::add)
+            );
+
+            this.combinationType = CombinationType.TwoPairs;
+            this.combinationType.setCardCombinations(cardCombinations);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean detectPair(List<Card> cards) {
-        Map<CardRank, Long> cardRanksCount = cards.stream().collect(groupingBy(Card::getRank, counting()));
-        return cardRanksCount.containsValue(2L);
+        Map<CardRank, Long> ranksCount = cards.stream()
+                .collect(groupingBy(Card::getRank, counting()));
+
+        if (ranksCount.containsValue(2L)) {
+            List<Card> cardCombinations = new ArrayList<>();
+
+            CardRank pairCardRank = ranksCount.entrySet().stream()
+                    .filter(rc -> rc.getValue() == 2L)
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+
+            cards.stream()
+                    .filter(card -> card.getRank() == pairCardRank)
+                    .forEach(cardCombinations::add);
+
+            this.combinationType = CombinationType.Pair;
+            this.combinationType.setCardCombinations(cardCombinations);
+            return true;
+        }
+
+        return false;
     }
 }

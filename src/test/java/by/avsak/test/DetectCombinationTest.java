@@ -61,6 +61,7 @@ public class DetectCombinationTest {
 
         hand.detectCombination(board); // 2s3h
         assertEquals(hand.getCombinationType(), CombinationType.Flush);
+        System.out.println(hand.getCombinationType().getCardCombinations());
     }
 
     @Test

@@ -1,5 +1,7 @@
 package by.avsak.test;
 
+import java.util.List;
+
 public enum CombinationType {
     StraightFlush(9, "Straight flush !!!"),
     FourOfKind(   8, "Four of a kind"),
@@ -13,6 +15,7 @@ public enum CombinationType {
 
     private int power;
     private String name;
+    private List<Card> cardCombinations;
 
     CombinationType(int power, String name) {
         this.power = power;
@@ -21,6 +24,14 @@ public enum CombinationType {
 
     public int getPower() {
         return power;
+    }
+
+    public void setCardCombinations(List<Card> cardCombinations) {
+        this.cardCombinations = cardCombinations;
+    }
+
+    public List<Card> getCardCombinations() {
+        return cardCombinations;
     }
 
     @Override
