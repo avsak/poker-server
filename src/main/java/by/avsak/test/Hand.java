@@ -89,7 +89,7 @@ public class Hand implements Comparable<Hand> {
                 .map(card -> card.getRank().getPower())
                 .collect(Collectors.toList());
 
-        while (straight.get(straight.size() - 1) > 2) {
+        while (straight.get(straight.size() - 1) >= 2) {
             if (cardsRank.containsAll(straight)) {
 
                 Map<CardSuit, Long> suitsCount = cardList.stream()
@@ -98,10 +98,8 @@ public class Hand implements Comparable<Hand> {
                 if (suitsCount.containsValue(5L) || suitsCount.containsValue(6L) || suitsCount.containsValue(7L)) {
                     this.combinationType = CombinationType.StraightFlush;
                     this.combinationType.setCardCombinations(cardList.subList(0, 5));
-
-                    System.out.println(cardList.subList(0, 5));
                     return true;
-                }
+                } else break;
 
             } else {
                 straight = straight.stream()
@@ -123,14 +121,9 @@ public class Hand implements Comparable<Hand> {
 
             Map<CardSuit, Long> suitsCount = cardCombinations.stream()
                     .collect(groupingBy(Card::getSuit, counting()));
-
-            System.out.println(suitsCount);
-
             if (suitsCount.containsValue(5L)) {
-
                 this.combinationType = CombinationType.StraightFlush;
                 this.combinationType.setCardCombinations(cardCombinations);
-                System.out.println(cardCombinations);
                 return true;
             }
         }
@@ -238,11 +231,14 @@ public class Hand implements Comparable<Hand> {
                 .map(card -> card.getRank().getPower())
                 .collect(Collectors.toList());
 
-        while (straight.get(straight.size() - 1) > 2) {
+        while (straight.get(straight.size() - 1) >= 2) {
             if (cardsRank.containsAll(straight)) {
+
                 this.combinationType = CombinationType.Straight;
                 this.combinationType.setCardCombinations(cardList.subList(0, 5));
+                System.out.println(cardList.subList(0, 5));
                 return true;
+
             } else {
                 straight = straight.stream()
                         .map(cardRank -> cardRank - 1)
