@@ -72,7 +72,6 @@ public class Hand implements Comparable<Hand> {
         if (this.combinationType == CombinationType.Flush) return compareFlush(hand2);
         if (this.combinationType == CombinationType.FullHouse) return compareFullHouse(hand2);
         if (this.combinationType == CombinationType.FourOfKind) return compareFourOfKind(hand2);
-
         return 0;
     }
 
@@ -107,13 +106,6 @@ public class Hand implements Comparable<Hand> {
         } else return threeCard1.compareTo(threeCard2);
     }
 
-    private int compareFourOfKind(Hand hand2) {
-        Card threeCard1 = this.cardCombinations.get(0);
-        Card threeCard2 = hand2.getCardCombinations().get(0);
-
-        return threeCard1.compareTo(threeCard2);
-    }
-
     private int compareStraight(Hand hand2) {
         List<Integer> wheel = new ArrayList<>(Arrays.asList(14, 2, 3, 4, 5));
 
@@ -141,20 +133,6 @@ public class Hand implements Comparable<Hand> {
         } else return Integer.compare(ranks1sum, ranks2sum);
     }
 
-    private int compareFullHouse(Hand hand2) {
-        Card threeCard1 = this.cardCombinations.get(0);
-        Card threeCard2 = hand2.getCardCombinations().get(0);
-
-        if (threeCard1.compareTo(threeCard2) == 0) {
-            Card pairCard1 = this.cardCombinations.get(3);
-            Card pairCard2 = hand2.getCardCombinations().get(3);
-            if (pairCard1.compareTo(pairCard2) == 0) {
-                return compareHighCard(hand2);
-            } else return pairCard1.compareTo(pairCard2);
-
-        } else return threeCard1.compareTo(threeCard2);
-    }
-
     private int compareFlush(Hand hand2) {
         if (this.cardCombinations.get(0).compareTo(hand2.getCardCombinations().get(0)) == 0) {
             if (this.cardCombinations.get(1).compareTo(hand2.getCardCombinations().get(1)) == 0) {
@@ -169,7 +147,28 @@ public class Hand implements Comparable<Hand> {
         } else return this.cardCombinations.get(0).compareTo(hand2.getCardCombinations().get(0));
     }
 
-    public int compareHighCard(Hand hand2) {
+    private int compareFullHouse(Hand hand2) {
+        Card threeCard1 = this.cardCombinations.get(0);
+        Card threeCard2 = hand2.getCardCombinations().get(0);
+
+        if (threeCard1.compareTo(threeCard2) == 0) {
+            Card pairCard1 = this.cardCombinations.get(3);
+            Card pairCard2 = hand2.getCardCombinations().get(3);
+            if (pairCard1.compareTo(pairCard2) == 0) {
+                return compareHighCard(hand2);
+            } else return pairCard1.compareTo(pairCard2);
+
+        } else return threeCard1.compareTo(threeCard2);
+    }
+
+    private int compareFourOfKind(Hand hand2) {
+        Card threeCard1 = this.cardCombinations.get(0);
+        Card threeCard2 = hand2.getCardCombinations().get(0);
+
+        return threeCard1.compareTo(threeCard2);
+    }
+
+    private int compareHighCard(Hand hand2) {
         List<Card> hand1Cards = this.cards;
         List<Card> hand2Cards = hand2.getCards();
 
@@ -185,7 +184,6 @@ public class Hand implements Comparable<Hand> {
             return -1;
         } else return Integer.compare(comparisonSecondCard, 0);
     }
-
 
     private boolean detectStraightFlush(List<Card> cards) {
         List<Integer> straight = new ArrayList<>(Arrays.asList(14, 13, 12, 11, 10));
