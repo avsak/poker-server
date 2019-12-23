@@ -5,6 +5,7 @@ import java.util.List;
 public class PokerRound {
     private Board board;
     private List<Hand> hands;
+    private List<Hand> sortedHands;
     private boolean isValid = true;
     private String errorMessage;
 
@@ -38,5 +39,13 @@ public class PokerRound {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public List<Hand> getSortedHands() {
+        return sortedHands;
+    }
+
+    public void setSortedHands(List<Hand> sortedHands) {
+        this.sortedHands = sortedHands;
     }
 }

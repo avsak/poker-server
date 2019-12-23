@@ -17,9 +17,10 @@ public class PokerServer {
         log.info("Server is running");
         Parser parser = new Parser();
         Validator validator = new Validator();
+        List<PokerRound> pokerRounds = new ArrayList<>();
         String inputLine;
 
-        System.out.println("Enter data: ");
+        System.out.println("Input:");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         while ((inputLine = br.readLine()) != null) {
@@ -38,24 +39,34 @@ public class PokerServer {
                             .collect(Collectors.toList());
 
                     Collections.sort(sortedHands); // ascending
-                    System.out.println(formattingPokerRoundResult(sortedHands));
+                    pokerRound.setSortedHands(sortedHands);
+                    pokerRounds.add(pokerRound);
                 } else {
-                    System.out.println(pokerRound.getErrorMessage() + "\n");
+                    pokerRounds.add(pokerRound);
                 }
             } else {
-                System.out.println(pokerRound.getErrorMessage() + "\n");
+                pokerRounds.add(pokerRound);
             }
         }
+
+        System.out.println("Output:");
+        pokerRounds.forEach(PokerServer::printPokerRoundResult);
         br.close();
     }
 
-    private static String formattingPokerRoundResult(List<Hand> sortedHands) {
+    private static void printPokerRoundResult(PokerRound pokerRound) {
+
+        if (!pokerRound.isValid()) {
+            System.out.println(pokerRound.getErrorMessage());
+            return;
+        }
+
         String result = "";
-        ListIterator<Hand> listIterator = sortedHands.listIterator();
+        ListIterator<Hand> listIterator = pokerRound.getSortedHands().listIterator();
 
         while (listIterator.hasNext()) {
             Hand currentHand = listIterator.next();
-            Hand previousHand = listIterator.previousIndex() == 0 ? null : sortedHands.get(listIterator.previousIndex() - 1);
+            Hand previousHand = listIterator.previousIndex() == 0 ? null : pokerRound.getSortedHands().get(listIterator.previousIndex() - 1);
 
             if (previousHand == null) {
                 result = result + currentHand.getCards().get(0).getRank() + currentHand.getCards().get(0).getSuit()
@@ -68,6 +79,6 @@ public class PokerServer {
                         + currentHand.getCards().get(1).getRank() + currentHand.getCards().get(1).getSuit();
             }
         }
-        return result + "\n";
+        System.out.println(result);
     }
 }

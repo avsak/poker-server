@@ -18,3 +18,5 @@ This program read from standard input (`System.in`) until `EOF` (`Ctrl+D` or `Ct
 Example:
 
 ![Example](https://github.com/avsak/poker-server/blob/master/images/example.png)
+
+The last line must have a symbol for new line - `\n`
